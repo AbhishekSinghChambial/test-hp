@@ -1,17 +1,48 @@
 version: 0.0
 os: linux
+
 files:
   - source: /
-    destination: /home/ubuntu/nextjs-app
+    destination: /var/www/hp-connect-web
+    overwrite: true  # Overwrite existing files during deployment
+
+permissions:
+  - object: /var/www/hp-connect-web
+    owner: root
+    group: root
+    mode: 755
+    type:
+      - directory
+  - object: /var/www/hp-connect-web/beforeinstall.sh
+    owner: root
+    group: root
+    mode: 755
+    type:
+      - file
+  - object: /var/www/hp-connect-web/afterinstall.sh
+    owner: root
+    group: root
+    mode: 755
+    type:
+      - file
+  - object: /var/www/hp-connect-web/start_server.sh
+    owner: root
+    group: root
+    mode: 755
+    type:
+      - file
 
 hooks:
+  BeforeInstall:
+    - location: beforeinstall.sh
+      timeout: 900
+      runas: root
   AfterInstall:
-    - location: scripts/install_dependencies.sh
-      timeout: 300
-      runas: ubuntu
-
+    - location: afterinstall.sh
+      timeout: 900
+      runas: root
   ApplicationStart:
-    - location: scripts/start_server.sh
-      timeout: 300
-      runas: ubuntu
+    - location: start_server.sh
+      timeout: 900
+      runas: root
 
