@@ -1,22 +1,27 @@
 #!/bin/bash
-set -e  # Exit immediately if a command exits with a non-zero status
+set -e  # Exit on error
 
 echo "===== Starting BeforeInstall Script ====="
 
-# Create necessary directories
-mkdir -p /var/www/hp-connect-web           # App directory
-mkdir -p /mnt/hp-connect-web               # Backup directory
+APP_DIR="/var/www/hp-connect-web"
+BACKUP_DIR="/mnt/hp-connect-web"
 
-# Backup existing deployment files if any
-if [ "$(ls -A /var/www/hp-connect-web 2>/dev/null)" ]; then
+# Create necessary directories
+mkdir -p "$APP_DIR"
+mkdir -p "$BACKUP_DIR"
+
+# Backup only if there are files inside the app directory
+if [ "$(ls -A "$APP_DIR" 2>/dev/null)" ]; then
     echo "Backing up existing application files..."
-    cp -r /var/www/hp-connect-web/* /mnt/hp-connect-web/
+    cp -r "$APP_DIR"/* "$BACKUP_DIR"/
+else
+    echo "No application files to back up. Skipping backup."
 fi
 
 # Clean the existing deployment directory (after backup)
-rm -rf /var/www/hp-connect-web/*
+rm -rf "$APP_DIR"/* || true
 
-# Install NVM (Node Version Manager) if not installed
+# Install NVM if not already installed
 export NVM_DIR="/root/.nvm"
 if [ ! -d "$NVM_DIR" ]; then
     echo "Installing NVM..."
@@ -36,7 +41,7 @@ nvm install 22 || true
 nvm alias default 22
 nvm use 22
 
-# Ensure permissions are set for NVM
+# Ensure permissions for NVM directory
 chmod -R 755 "$NVM_DIR"
 
 echo "===== BeforeInstall Script Completed ====="
