@@ -7,14 +7,14 @@ echo "===== Starting BeforeInstall Script ====="
 mkdir -p /var/www/hp-connect-web           # App directory
 mkdir -p /mnt/hp-connect-web               # Backup directory
 
-# Clean the existing deployment directory
-rm -rf /var/www/hp-connect-web/*
-
 # Backup existing deployment files if any
-if [ -d "/var/www/hp-connect-web" ] && [ "$(ls -A /var/www/hp-connect-web 2>/dev/null)" ]; then
+if [ "$(ls -A /var/www/hp-connect-web 2>/dev/null)" ]; then
     echo "Backing up existing application files..."
     cp -r /var/www/hp-connect-web/* /mnt/hp-connect-web/
 fi
+
+# Clean the existing deployment directory (after backup)
+rm -rf /var/www/hp-connect-web/*
 
 # Install NVM (Node Version Manager) if not installed
 export NVM_DIR="/root/.nvm"
