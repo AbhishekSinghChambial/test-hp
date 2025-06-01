@@ -25,8 +25,8 @@ pm2 start npm --name "$APP_NAME" -- start
 # Save PM2 process list
 pm2 save
 
-# Configure PM2 to start on system boot
-pm2 startup systemd -u root --hp /root | tail -n 1 | bash
+# Note: Do NOT run 'pm2 startup' on every deploy. Run it once manually:
+# pm2 startup systemd -u root --hp /root
 
 echo "===== Application $APP_NAME is running via PM2 ====="
 
